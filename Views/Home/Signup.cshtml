@@ -1,0 +1,121 @@
+﻿@model HosipitalWebApplication.Migration.Patientdata
+@{
+    ViewBag.Title = "Signup";
+}
+@section logout{
+    <button type="button" class="navbar-nav ml-auto btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#LogoutConfirm">
+        Logout
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="20" fill="currentColor" class="bi bi-box-arrow-right m-1" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
+            <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+        </svg>
+    </button>
+    <div class="modal fade" id="LogoutConfirm" tabindex="-1" aria-labelledby="ConfirmLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-black bg-opacity-50">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-light" id="LogoutModalLabel">Confirm</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-light">
+                    Do You Really Want To Logout?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success bg-opacity-50" data-bs-dismiss="modal">No </button>
+                    <a href="@Url.Action("Logout", "home")" class="btn btn-danger bg-opacity-50">Yes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section admin{
+    <h2 class="justify-content-between text-info">Welcome @Session["Username"]</h2>
+}
+<div class=" bg-image mt-5">
+
+    <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100 ">
+                <div class="col-12 col-md-9 col-lg-7 col-xl-6 ">
+                    <div class="card bgcolor bg-secondary bg-opacity-25 shadow p-3 mb-5 bg-white rounded" style="border-radius: 15px;">
+                        <div class="card-body p-5  ">
+                            <h2 class="text-uppercase text-center mb-5 ">Add New Patients</h2>
+                            @using (Html.BeginForm("Signup", "Home", FormMethod.Post, new { @class = "form" }))
+                            {
+                                @Html.ValidationSummary(true)
+                                <div class="form-outline mb-4">
+                                    @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "form-outline mb-4" })
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label form-outline mb-4" })
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    @Html.LabelFor(model => model.DOB, htmlAttributes: new { @class = "control-label form-outline mb-4" })
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @type = "date", @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    @Html.LabelFor(m => m.Gender, null, new { @class = "text-black" })
+                                    <div class="radio-inline">
+                                        @Html.RadioButtonFor(m => m.Gender, "Male")<span class="text-black">Male</span>
+                                        @Html.RadioButtonFor(m => m.Gender, "Female")<span class="text-black">Female</span>
+                                        @Html.RadioButtonFor(m => m.Gender, "Others")<span class="text-black">Others</span>
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-outline mb-4">
+                                    @Html.LabelFor(model => model.HealthIssues, "Health Issues", htmlAttributes: new { @class = "control-label form-outline mb-4" })
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.HealthIssues, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.HealthIssues, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label form-outline mb-4" })
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label form-outline mb-4" })
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    @Html.LabelFor(model => model.LastVisitDateTime, "Last Visit Date", new { @class = "control-label form-outline mb-4" })
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.LastVisitDateTime, new { htmlAttributes = new { @type = "date", @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.LastVisitDateTime, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="submit" value="Save" class="btn btn-dark" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section validation{
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+}

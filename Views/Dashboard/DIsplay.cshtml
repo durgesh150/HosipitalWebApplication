@@ -1,0 +1,197 @@
+﻿@using HosipitalWebApplication.Migration
+@using PagedList
+@using PagedList.Mvc;
+@model IEnumerable<HosipitalWebApplication.Migration.Patientdata>
+@{
+    int pageSize = (int)ViewData["pageSize"];
+    int totalItems = (int)ViewData["totalitems"];
+    int currentPage = (int)ViewData["currentPage"];
+    int datasinpage = (int)ViewData["datasinpage"];
+    bool Isadmin = false;
+    if (Session["Isadmin"] != null)
+    {
+        Isadmin = (bool)Session["Isadmin"];
+    }
+    ViewBag.Title = "Display";
+}
+@section logout{
+    <button type="button" class="navbar-nav ml-auto btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#LogoutConfirm">
+        Logout
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="20" fill="currentColor" class="bi bi-box-arrow-right m-1" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
+            <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+        </svg>
+    </button>
+    <div class="modal fade" id="LogoutConfirm" tabindex="-1" aria-labelledby="ConfirmLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-black bg-opacity-50">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-light" id="LogoutModalLabel">Confirm</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-light">
+                    Do You Really Want To Logout?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success bg-opacity-50" data-bs-dismiss="modal">No </button>
+                    <a href="@Url.Action("Logout", "home")" class="btn btn-danger bg-opacity-50">Yes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section admin{
+    <h2 class="justify-content-between text-info">Welcome @Session["Username"]</h2>
+}
+@*sorting*@
+<div class="dropdown float-end">
+    <button class="dropbtn btn btn-dark">Sort by ↓</button>
+    <div class="dropdown-content">
+        @Html.ActionLink("Name", "Display", new { sortby = ViewBag.SortName, searchTerm = Request.QueryString["searchTerm"] })
+        @Html.ActionLink("City", "Display", new { sortby = ViewBag.sortCity, searchTerm = Request.QueryString["searchTerm"] })
+        @Html.ActionLink("Health Issue", "Display", new { sortby = ViewBag.SortHealth, searchTerm = Request.QueryString["searchTerm"] })
+    </div>
+</div>
+@using (Html.BeginForm("display", "dashboard", FormMethod.Get))
+{
+    <div class="d-flex m-2">
+        @Html.TextBox("searchTerm", "", new { @class = "form-control mr-sm-2", placeholder = "search by Name,address,city,health issues" })
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </div>
+    if (Isadmin)
+    {
+    <h3 class="float-end text-secondary d-flex">
+        <a href="@Url.Action("Signup","Home")" class="btn btn-dark" }>Add More</a>
+    </h3>
+    }
+
+}
+
+<span class="text-secondary bg-dark h4">Total Patient:<span class="text-info">@ViewData["totalitems"]</span></span>
+<table class="table table-hover table-bordered  justify-content-center text-center m-4">
+    <thead class="bg-secondary text-light">
+        <tr>
+            <th>S.No</th>
+            <th>Full Name</th>
+            <th>DOB</th>
+            <th>Gender</th>
+            <th>Health Issues</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>Created On</th>
+            <th>Last Visit</th>
+            <th>Created By Id</th>
+            <th>Updated By Id</th>
+            @if (Isadmin)
+            {
+                <th>Action</th>
+            }
+        </tr>
+    </thead>
+    <tbody class="bg-secondary bg-opacity-25">
+
+        @{int index = 1;}
+        @if (Model.Count() == 0)
+        {
+            <tr>
+                <td colspan="12" class="text-danger"> No match found !!!</td>
+            </tr>
+        }
+        else
+        {
+            foreach (Patientdata patient in Model)
+            {
+                <tr>
+                    <td>@index</td>
+                    <td>@patient.FirstName @patient.LastName</td>
+                    <td>@patient.DOB.ToString("yyyy-MM-dd")</td>
+                    <td>@patient.Gender</td>
+                    <td>@patient.HealthIssues</td>
+                    <td>@patient.Address</td>
+                    <td>@patient.City</td>
+                    <td>@patient.CreatedOnDateTime</td>
+                    <td>@patient.LastVisitDateTime</td>
+                    <td>@patient.CreatedByUserId</td>
+                    <td>@patient.UpdatedByUserId</td>
+                    @if (Isadmin)
+                    {
+                        <td class="d-flex btn-group">
+                            <a href="@Url.Action("Update", "Dashboard", new { Id = @patient.Id, searchTerm = Request.QueryString["searchTerm"], sortBy = Request.QueryString["sortBy"] })" class="btn btn-warning m-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                                    <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
+                                </svg>
+                            </a>
+                            <button type="button" class="btn btn-danger m-2" data-bs-toggle="modal" data-bs-target="#DeleteConfirm-@patient.Id">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                </svg>
+                            </button>
+                            <div class="modal fade" id="DeleteConfirm-@patient.Id" tabindex="-1" aria-labelledby="DeleteConfirmLabel-@patient.Id" aria-hidden="true">
+                                <div class="modal-dialog ">
+                                    <div class="modal-content  bg-secondary bg-opacity-50">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5 text-light" id="DeleteConfirmLabel-@patient.Id">Confirm</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-light">
+                                            Do You Really Want To Delete?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">No</button>
+                                            <a href="@Url.Action("Delete", "Dashboard", new { Id = @patient.Id, searchTerm = Request.QueryString["searchTerm"], sortBy = Request.QueryString["sortBy"] })" class="btn btn-danger">Yes</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    }
+                </tr>
+                index++;
+            }
+        }
+    </tbody>
+</table>
+<div class="text-center">
+    <ul class="pagination">
+
+        @if (Model.Count() != 0)
+        {
+            var startPage = currentPage - 2;
+            var endPage = currentPage + 2;
+            if (startPage <= 0)
+            {
+                startPage = 1;
+                endPage = startPage + 4;
+            }
+            if (endPage > (int)Math.Ceiling((double)datasinpage))
+            {
+                endPage = (int)Math.Ceiling((double)datasinpage);
+                startPage = endPage - 4;
+            }
+            if (startPage <= 0)
+            {
+                startPage = 1;
+            }
+            <li>
+                <a class="page-link" href="@Url.Action("Display", new { page = 1, searchTerm = Request.QueryString["searchTerm"],sortBy=Request.QueryString["sortBy"] })"><< First</a>
+            </li>
+
+            for (int i = startPage; i <= endPage; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Display", new { page = i, searchTerm = Request.QueryString["searchTerm"],sortBy=Request.QueryString["sortBy"] })" @(i == currentPage ? "disabled" : "")>@i</a>
+                </li>
+            }
+            <li>
+                <a class="page-link" href="@Url.Action("Display", new { page = (int)Math.Ceiling((double)datasinpage), searchTerm = Request.QueryString["searchTerm"],sortBy=Request.QueryString["sortBy"] })">Last>></a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a class="page-link" href="@Url.Action("Display", new { page = 1, searchTerm = Request.QueryString["searchTerm"],sortBy=Request.QueryString["sortBy"] })"><< First</a>
+            </li>
+        }
+    </ul>
+</div>

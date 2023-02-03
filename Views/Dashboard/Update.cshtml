@@ -1,0 +1,94 @@
+﻿
+@model HosipitalWebApplication.Migration.Patientdata
+@{
+    ViewBag.Title = "Update";
+}
+@section logout{
+    <button type="button" class="navbar-nav ml-auto btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#LogoutConfirm">
+        Logout
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="20" fill="currentColor" class="bi bi-box-arrow-right m-1" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
+            <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+        </svg>
+    </button>
+    <div class="modal fade" id="LogoutConfirm" tabindex="-1" aria-labelledby="ConfirmLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-black bg-opacity-50">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-light" id="LogoutModalLabel">Confirm</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-light">
+                    Do You Really Want To Logout?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success bg-opacity-50" data-bs-dismiss="modal">No </button>
+                    <a href="@Url.Action("Logout", "home")" class="btn btn-danger bg-opacity-50">Yes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section admin{
+    <h2 class="justify-content-between text-info">Welcome @Session["Username"]</h2>
+}
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100 ">
+        <div class="col-lg-8 col-xl-6 ">
+            <div class="card rounded-3 bg-secondary bg-opacity-25 bgcolor shadow p-3 mb-5 bg-white rounded">
+                <h2 class="d-flex justify-content-center  align-items-center">Update Patient data</h2>
+                <img src="~/Content/images/Update_Hospital.jpg"
+                     class="w-100" style="border-top-left-radius: .3rem; border-top-right-radius: .3rem;"
+                     alt="Sample photo">
+                <div class="card-body p-4 p-md-5">
+                    @using (Html.BeginForm("Update", "dashboard", FormMethod.Post, new { @class = "form" }))
+                    {
+                        @Html.ValidationSummary(true)
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control mb-3" } })
+                            @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-outline mb-4 justify-content-center">
+                            @Html.LabelFor(m => m.Gender, null, new { @class = "justify-content-center text-black mb-2" })
+                            <div class="radio-inline">
+                                @Html.RadioButtonFor(m => m.Gender, "Male")<span class="text-black">Male</span>
+                                @Html.RadioButtonFor(m => m.Gender, "Female")<span class="text-black">Female</span>
+                                @Html.RadioButtonFor(m => m.Gender, "Others")<span class="text-black">Others</span>
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.HealthIssues, htmlAttributes: new { @class = "control-label mb-2" })
+                            @Html.EditorFor(model => model.HealthIssues, new { htmlAttributes = new { @class = "form-control mb-2" } })
+                            @Html.ValidationMessageFor(model => model.HealthIssues, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label mb-2" })
+                            @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control mb-2" } })
+                            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label mb-2" })
+                            @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control mb-2" } })
+                            @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+                        </div>
+
+                        <input type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body m-auto" value="Update">
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section validation{
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+}
